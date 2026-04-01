@@ -1,0 +1,7 @@
+{
+  "name": "color-diff-napi",
+  "version": "0.0.0",
+  "description": "Stub — re-exports the pure-TS port at src/native-ts/color-diff",
+  "main": "./index.ts",
+  "exports": { ".": "./index.ts" }
+}

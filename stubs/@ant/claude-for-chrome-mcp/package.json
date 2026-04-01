@@ -1,0 +1,7 @@
+{
+  "name": "@ant/claude-for-chrome-mcp",
+  "version": "0.0.0",
+  "description": "Stub — Chrome extension MCP, not available publicly",
+  "main": "./index.ts",
+  "exports": { ".": "./index.ts" }
+}

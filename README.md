@@ -2,6 +2,8 @@
 
 > **On March 31, 2026, the full source code of Anthropic's Claude Code CLI was leaked** via a `.map` file exposed in their npm registry.
 
+![Claude Code CLI](screenshots/cli.jpeg)
+
 ---
 
 ## How It Leaked
@@ -249,6 +251,146 @@ Reusable workflows defined in `skills/` and executed through `SkillTool`. Users 
 ### Plugin Architecture
 
 Built-in and third-party plugins are loaded through the `plugins/` subsystem.
+
+---
+
+## Instalación en Linux y uso en la terminal
+
+### Requisitos previos
+
+- [Bun](https://bun.sh) — el runtime usado por Claude Code
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+- [ripgrep](https://github.com/BurntSushi/ripgrep) — necesario para la herramienta de búsqueda
+
+```bash
+# Debian / Ubuntu
+sudo apt install ripgrep
+
+# Fedora / RHEL
+sudo dnf install ripgrep
+
+# Arch
+sudo pacman -S ripgrep
+```
+
+### Compilar desde el código fuente
+
+```bash
+git clone <este-repo>
+cd claude-code-leak
+
+bun install
+bun run build
+```
+
+El ejecutable queda en `dist/cli.js`.
+
+### Uso en la terminal
+
+**Opción 1 — Con API key directamente**
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-api03-..."
+bun dist/cli.js
+```
+
+**Opción 2 — Login con OAuth (cuenta Claude Pro/Max)**
+
+```bash
+bun dist/cli.js auth login
+```
+
+**Opción 3 — Modo no-interactivo (funciona sin TTY, ideal para scripts y pipes)**
+
+```bash
+ANTHROPIC_API_KEY="sk-ant-..." bun dist/cli.js -p "¿Cuánto es 2+2?"
+```
+
+### Por qué no aparece nada en modo interactivo
+
+El modo interactivo usa React + Ink, que necesita una terminal real (TTY). Si lo ejecutas desde VS Code terminal integrado o una terminal normal de Linux debería funcionar sin problema. Si lo corres desde un script o pipe, usa el flag `-p`.
+
+### Instalar globalmente como `claudeleak`
+
+```bash
+ln -s "$(pwd)/dist/cli.js" ~/.local/bin/claudeleak
+chmod +x ~/.local/bin/claudeleak
+```
+
+Asegúrate de que `~/.local/bin` esté en tu `PATH`:
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+O con `bun link` (instala el bin declarado en package.json):
+
+```bash
+bun link
+```
+
+Después puedes usarlo directamente:
+
+```bash
+claudeleak
+claudeleak --version
+claudeleak -p "resume este archivo" < README.md
+```
+
+---
+
+## Qué funciona y qué no en esta versión
+
+### ✅ Funciona completamente
+
+| Funcionalidad | Notas |
+|---|---|
+| **Leer archivos** (`Read`, `Glob`, `Grep`) | 100% funcional |
+| **Editar archivos** (`Edit`, `Write`) | 100% funcional |
+| **Ejecutar bash** (`Bash`) | 100% funcional |
+| **Leer repos git** | Funciona vía Bash + herramientas de archivo |
+| **MCP servers** | Funciona — `claudeleak mcp add`, conexión stdio/SSE |
+| **Skills** (`/skills`) | Funciona — carga y ejecuta skills |
+| **Web fetch / Web search** | Funciona |
+| **Slash commands** | `/commit`, `/review`, `/compact`, `/diff`, `/memory`, `/config`, `/doctor`, `/mcp`, `/cost`, `/theme`, `/vim`, etc. |
+| **Modo no-interactivo** (`-p`) | Funciona — ideal para pipes y scripts |
+| **Auth OAuth** (cuenta Claude Pro/Max) | Funciona — `claudeleak auth login` |
+| **Auth API key** (`ANTHROPIC_API_KEY`) | Funciona |
+| **Multi-turn / sesiones** (`/resume`) | Funciona |
+| **Jupyter notebooks** (`NotebookEdit`) | Funciona |
+| **LSP** (hover, diagnósticos) | Funciona si tienes un LSP instalado |
+| **Syntax highlighting en diffs** | Funciona — usa el port TypeScript puro (no el módulo nativo Rust) |
+
+### ⚠️ Funciona con limitaciones
+
+| Funcionalidad | Limitación |
+|---|---|
+| **Bedrock / Vertex / Foundry** | Los paquetes SDK están instalados, pero no probados |
+| **Telemetría / OpenTelemetry** | Los exporters OTLP están marcados como externos — si los instalas manualmente funcionan, si no simplemente no se envía telemetría |
+| **`/update`** | Detectará que "hay una versión nueva" porque el número de versión no coincide con el real de Anthropic |
+| **Worktrees** (`-w`, `EnterWorktree`) | El código está presente, no probado en esta compilación |
+
+### ❌ No funciona
+
+| Funcionalidad | Razón |
+|---|---|
+| **Computer Use** (control de pantalla/ratón) | Paquetes `@ant/computer-use-*` son macOS-only — nunca se cargan en Linux |
+| **Claude in Chrome** (`--chrome`) | `@ant/claude-for-chrome-mcp` no disponible públicamente |
+| **Voice mode** | Desactivado por feature flag `VOICE_MODE=false` |
+| **Bridge mode** (IDE VS Code/JetBrains) | Desactivado por `BRIDGE_MODE=false` |
+| **Daemon mode** | Desactivado por `DAEMON=false` |
+| **Coordinator / multi-agent swarms** | Desactivado por `COORDINATOR_MODE=false` |
+| **KAIROS / assistant mode** | Desactivado por `KAIROS=false` |
+| **Sandbox runtime** (bubblewrap) | Requiere configuración extra en Linux |
+
+### Resumen práctico
+
+Para uso diario de ingeniería de software — leer código, editar, ejecutar comandos, revisar PRs, usar MCP, skills — **funciona igual que el Claude Code oficial**. Lo que está desactivado son features experimentales internas de Anthropic (voice, coordinator swarms, IDE bridge) y las que son exclusivas de macOS (computer use).
 
 ---
 
