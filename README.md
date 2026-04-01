@@ -342,6 +342,56 @@ claudeleak -p "resume este archivo" < README.md
 
 ---
 
+## Qué funciona y qué no en esta versión
+
+### ✅ Funciona completamente
+
+| Funcionalidad | Notas |
+|---|---|
+| **Leer archivos** (`Read`, `Glob`, `Grep`) | 100% funcional |
+| **Editar archivos** (`Edit`, `Write`) | 100% funcional |
+| **Ejecutar bash** (`Bash`) | 100% funcional |
+| **Leer repos git** | Funciona vía Bash + herramientas de archivo |
+| **MCP servers** | Funciona — `claudeleak mcp add`, conexión stdio/SSE |
+| **Skills** (`/skills`) | Funciona — carga y ejecuta skills |
+| **Web fetch / Web search** | Funciona |
+| **Slash commands** | `/commit`, `/review`, `/compact`, `/diff`, `/memory`, `/config`, `/doctor`, `/mcp`, `/cost`, `/theme`, `/vim`, etc. |
+| **Modo no-interactivo** (`-p`) | Funciona — ideal para pipes y scripts |
+| **Auth OAuth** (cuenta Claude Pro/Max) | Funciona — `claudeleak auth login` |
+| **Auth API key** (`ANTHROPIC_API_KEY`) | Funciona |
+| **Multi-turn / sesiones** (`/resume`) | Funciona |
+| **Jupyter notebooks** (`NotebookEdit`) | Funciona |
+| **LSP** (hover, diagnósticos) | Funciona si tienes un LSP instalado |
+| **Syntax highlighting en diffs** | Funciona — usa el port TypeScript puro (no el módulo nativo Rust) |
+
+### ⚠️ Funciona con limitaciones
+
+| Funcionalidad | Limitación |
+|---|---|
+| **Bedrock / Vertex / Foundry** | Los paquetes SDK están instalados, pero no probados |
+| **Telemetría / OpenTelemetry** | Los exporters OTLP están marcados como externos — si los instalas manualmente funcionan, si no simplemente no se envía telemetría |
+| **`/update`** | Detectará que "hay una versión nueva" porque el número de versión no coincide con el real de Anthropic |
+| **Worktrees** (`-w`, `EnterWorktree`) | El código está presente, no probado en esta compilación |
+
+### ❌ No funciona
+
+| Funcionalidad | Razón |
+|---|---|
+| **Computer Use** (control de pantalla/ratón) | Paquetes `@ant/computer-use-*` son macOS-only — nunca se cargan en Linux |
+| **Claude in Chrome** (`--chrome`) | `@ant/claude-for-chrome-mcp` no disponible públicamente |
+| **Voice mode** | Desactivado por feature flag `VOICE_MODE=false` |
+| **Bridge mode** (IDE VS Code/JetBrains) | Desactivado por `BRIDGE_MODE=false` |
+| **Daemon mode** | Desactivado por `DAEMON=false` |
+| **Coordinator / multi-agent swarms** | Desactivado por `COORDINATOR_MODE=false` |
+| **KAIROS / assistant mode** | Desactivado por `KAIROS=false` |
+| **Sandbox runtime** (bubblewrap) | Requiere configuración extra en Linux |
+
+### Resumen práctico
+
+Para uso diario de ingeniería de software — leer código, editar, ejecutar comandos, revisar PRs, usar MCP, skills — **funciona igual que el Claude Code oficial**. Lo que está desactivado son features experimentales internas de Anthropic (voice, coordinator swarms, IDE bridge) y las que son exclusivas de macOS (computer use).
+
+---
+
 ## Disclaimer
 
 This repository archives source code that was leaked from Anthropic's npm registry on **2026-03-31**. All original source code is the property of [Anthropic](https://www.anthropic.com).
