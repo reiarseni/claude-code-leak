@@ -1,0 +1,7 @@
+{
+  "name": "modifiers-napi",
+  "version": "0.0.0",
+  "description": "Stub — keyboard modifier keys native module (macOS only)",
+  "main": "./index.ts",
+  "exports": { ".": "./index.ts" }
+}
