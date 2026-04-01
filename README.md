@@ -312,11 +312,11 @@ ANTHROPIC_API_KEY="sk-ant-..." bun dist/cli.js -p "¿Cuánto es 2+2?"
 
 El modo interactivo usa React + Ink, que necesita una terminal real (TTY). Si lo ejecutas desde VS Code terminal integrado o una terminal normal de Linux debería funcionar sin problema. Si lo corres desde un script o pipe, usa el flag `-p`.
 
-### Instalar globalmente como `claude`
+### Instalar globalmente como `claudeleak`
 
 ```bash
-ln -s "$(pwd)/dist/cli.js" ~/.local/bin/claude
-chmod +x ~/.local/bin/claude
+ln -s "$(pwd)/dist/cli.js" ~/.local/bin/claudeleak
+chmod +x ~/.local/bin/claudeleak
 ```
 
 Asegúrate de que `~/.local/bin` esté en tu `PATH`:
@@ -326,12 +326,18 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
+O con `bun link` (instala el bin declarado en package.json):
+
+```bash
+bun link
+```
+
 Después puedes usarlo directamente:
 
 ```bash
-claude
-claude --version
-claude -p "resume este archivo" < README.md
+claudeleak
+claudeleak --version
+claudeleak -p "resume este archivo" < README.md
 ```
 
 ---

@@ -4,7 +4,7 @@
   "description": "Claude Code CLI — rebuilt from leaked source",
   "private": true,
   "bin": {
-    "claude": "./dist/cli.js"
+    "claudeleak": "./dist/cli.js"
   },
   "workspaces": [
     "stubs/@ant/computer-use-mcp",
