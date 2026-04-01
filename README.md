@@ -2,6 +2,8 @@
 
 > **On March 31, 2026, the full source code of Anthropic's Claude Code CLI was leaked** via a `.map` file exposed in their npm registry.
 
+![Claude Code CLI](screenshots/cli.jpeg)
+
 ---
 
 ## How It Leaked
