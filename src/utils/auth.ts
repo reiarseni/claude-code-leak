@@ -1722,7 +1722,7 @@ export function getSubscriptionName(): string {
     case 'max':
       return 'Claude Max'
     case 'pro':
-      return 'Claude Pro'
+      return 'Claude Leak'
     default:
       return 'Claude API'
   }

@@ -252,6 +252,90 @@ Built-in and third-party plugins are loaded through the `plugins/` subsystem.
 
 ---
 
+## Instalación en Linux y uso en la terminal
+
+### Requisitos previos
+
+- [Bun](https://bun.sh) — el runtime usado por Claude Code
+
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
+
+- [ripgrep](https://github.com/BurntSushi/ripgrep) — necesario para la herramienta de búsqueda
+
+```bash
+# Debian / Ubuntu
+sudo apt install ripgrep
+
+# Fedora / RHEL
+sudo dnf install ripgrep
+
+# Arch
+sudo pacman -S ripgrep
+```
+
+### Compilar desde el código fuente
+
+```bash
+git clone <este-repo>
+cd claude-code-leak
+
+bun install
+bun run build
+```
+
+El ejecutable queda en `dist/cli.js`.
+
+### Uso en la terminal
+
+**Opción 1 — Con API key directamente**
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-api03-..."
+bun dist/cli.js
+```
+
+**Opción 2 — Login con OAuth (cuenta Claude Pro/Max)**
+
+```bash
+bun dist/cli.js auth login
+```
+
+**Opción 3 — Modo no-interactivo (funciona sin TTY, ideal para scripts y pipes)**
+
+```bash
+ANTHROPIC_API_KEY="sk-ant-..." bun dist/cli.js -p "¿Cuánto es 2+2?"
+```
+
+### Por qué no aparece nada en modo interactivo
+
+El modo interactivo usa React + Ink, que necesita una terminal real (TTY). Si lo ejecutas desde VS Code terminal integrado o una terminal normal de Linux debería funcionar sin problema. Si lo corres desde un script o pipe, usa el flag `-p`.
+
+### Instalar globalmente como `claude`
+
+```bash
+ln -s "$(pwd)/dist/cli.js" ~/.local/bin/claude
+chmod +x ~/.local/bin/claude
+```
+
+Asegúrate de que `~/.local/bin` esté en tu `PATH`:
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Después puedes usarlo directamente:
+
+```bash
+claude
+claude --version
+claude -p "resume este archivo" < README.md
+```
+
+---
+
 ## Disclaimer
 
 This repository archives source code that was leaked from Anthropic's npm registry on **2026-03-31**. All original source code is the property of [Anthropic](https://www.anthropic.com).
