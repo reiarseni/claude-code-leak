@@ -826,14 +826,9 @@ export function checkStatsigFeatureGate_CACHED_MAY_BE_STALE(
   }
 
   // Return cached value immediately from disk
-  // First check GrowthBook cache, then fall back to Statsig cache for migration
   const config = getGlobalConfig()
   const gbCached = config.cachedGrowthBookFeatures?.[gate]
-  if (gbCached !== undefined) {
-    return Boolean(gbCached)
-  }
-  // Fallback to Statsig cache for migration period
-  return config.cachedStatsigGates?.[gate] ?? false
+  return gbCached !== undefined ? Boolean(gbCached) : false
 }
 
 /**
@@ -871,14 +866,7 @@ export async function checkSecurityRestrictionGate(
     await reinitializingPromise
   }
 
-  // Check Statsig cache first - it may have correct value from previous logged-in session
   const config = getGlobalConfig()
-  const statsigCached = config.cachedStatsigGates?.[gate]
-  if (statsigCached !== undefined) {
-    return Boolean(statsigCached)
-  }
-
-  // Then check GrowthBook cache
   const gbCached = config.cachedGrowthBookFeatures?.[gate]
   if (gbCached !== undefined) {
     return Boolean(gbCached)

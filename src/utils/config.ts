@@ -362,7 +362,7 @@ export type GlobalConfig = {
   subscriptionNoticeCount?: number // Number of times the subscription notice has been shown
   hasAvailableSubscription?: boolean // Cached result of whether user has a subscription available
   subscriptionUpsellShownCount?: number // Number of times the subscription upsell has been shown (deprecated)
-  recommendedSubscription?: string // Cached config value from Statsig (deprecated)
+  recommendedSubscription?: string // Cached config value (deprecated)
 
   // Todo feature configuration
   todoFeatureEnabled: boolean // Whether the todo feature is enabled
@@ -437,12 +437,7 @@ export type GlobalConfig = {
   // Sonnet 4.5 → 4.6 migration (pro/max/team premium)
   sonnet45To46MigrationTimestamp?: number
 
-  // Cached statsig gate values
-  cachedStatsigGates: {
-    [gateName: string]: boolean
-  }
-
-  // Cached statsig dynamic configs
+  // Cached dynamic configs
   cachedDynamicConfigs?: { [configName: string]: unknown }
 
   // Cached GrowthBook feature values
@@ -614,7 +609,6 @@ function createDefaultGlobalConfig(): GlobalConfig {
     autoInstallIdeExtension: true,
     fileCheckpointingEnabled: true,
     terminalProgressBarEnabled: true,
-    cachedStatsigGates: {},
     cachedDynamicConfigs: {},
     cachedGrowthBookFeatures: {},
     respectGitignore: true,
