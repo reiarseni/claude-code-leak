@@ -2,17 +2,63 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Overview
+
+Claude Code is a terminal-based AI coding assistant built on React + Ink (React renderer for the terminal). It runs on **Bun** (not Node.js) and communicates with the Anthropic API via a streaming LLM loop (`QueryEngine`). The CLI exposes slash commands, a permission-gated tool system, multi-agent orchestration, and bidirectional IPC with IDE extensions.
+
+## Repository Structure
+
+```
+src/
+├── entrypoints/       # CLI bootstrap (cli.tsx, init.ts) and main.tsx
+├── query/             # QueryEngine — core LLM streaming loop
+├── tools/             # Self-contained tools (Bash, Read, Edit, Glob, …)
+├── commands/          # Slash commands (/commit, /review, …)
+├── components/        # Terminal UI components (React + Ink)
+├── services/          # Anthropic API client, MCP, OAuth, LSP, analytics
+├── bridge/            # Bidirectional IPC with IDE extensions
+├── coordinator/       # Multi-agent orchestration
+├── hooks/             # Tool permission lifecycle
+├── ink/               # Custom Ink reconciler wrapper
+├── schemas/           # Shared Zod schemas
+├── state/             # Global session state
+├── tasks/             # Task management system
+├── skills/            # Built-in skills
+├── assistant/         # Assistant-level logic
+├── bootstrap/         # Module loading and startup
+├── buddy/             # Pair-programming helper system
+├── cli/               # Argument parsing
+├── context/           # Conversation context management
+├── keybindings/       # Keyboard shortcut handling
+├── memdir/            # On-disk memory system
+├── migrations/        # Config/data migrations
+├── moreright/         # Right-panel UI
+├── native-ts/         # Native TypeScript bindings
+├── outputStyles/      # Terminal output formatting
+├── plugins/           # Plugin system
+├── remote/            # Remote session support
+├── screens/           # Full-screen UI views
+├── server/            # Embedded HTTP/IPC server
+├── types/             # Global TypeScript types
+├── upstreamproxy/     # Upstream proxy support
+├── utils/             # General utilities
+├── vim/               # Vim keybinding mode
+└── voice/             # Voice mode (feature flag: VOICE_MODE)
+```
+
+Top-level files of note: `build.ts` (Bun build script), `stubs/` (mocks for internal Anthropic packages), `dist/` (build output).
+
 ## Context
 
-This is the **leaked TypeScript source code** of Anthropic's Claude Code CLI (leaked 2026-03-31 via a `.map` file in the npm registry). The `src/` directory is present but the repository is **missing all build configuration**. There is no `package.json`, `tsconfig.json`, or build script.
+This is the **leaked TypeScript source code** of Anthropic's Claude Code CLI (leaked 2026-03-31 via a `.map` file in the npm registry). The `src/` directory is present. Build configuration (`package.json`, `tsconfig.json`, `build.ts`) has been reconstructed in this repo.
 
 ## Build Requirements
 
-To compile this project you would need to reconstruct:
+The build requires the following (all present in this repo):
 
 - `package.json` — dependency manifest (runtime is **Bun**, not Node.js)
 - `tsconfig.json` — TypeScript config (strict mode, JSX for React/Ink)
-- A Bun build script — to inject `MACRO.VERSION` and run feature-flag DCE via `bun:bundle`
+- `build.ts` — Bun build script that injects `MACRO.VERSION` and runs feature-flag DCE via `bun:bundle`
 
 The `MACRO` global (e.g. `MACRO.VERSION`) is injected at build time by the bundler; it is not declared in source files (except for a `declare const MACRO` forward-declaration in `src/utils/permissions/filesystem.ts`).
 
